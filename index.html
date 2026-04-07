@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Licencia de Conducir</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: #0f0f1a;
+  min-height: 100vh;
+  color: #f1f5f9;
+  padding: 16px;
+  padding-bottom: 40px;
+}
+
+.app { max-width: 600px; margin: 0 auto; }
+
+header { text-align: center; padding: 24px 0 20px; }
+
+header h1 {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: #e94560;
+  letter-spacing: -0.5px;
+}
+
+header p { color: #94a3b8; margin-top: 6px; font-size: 0.9rem; }
+
+/* Progress */
+.progress-area {
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 14px;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.prog-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+.prog-label { font-size: 0.75rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600; }
+.prog-pct { font-size: 1.3rem; font-weight: 800; color: #e94560; }
+
+.bar-track { width: 100%; height: 8px; background: rgba(255,255,255,0.1); border-radius: 99px; overflow: hidden; }
+.bar-fill { height: 100%; background: linear-gradient(90deg, #e94560, #f97316); border-radius: 99px; transition: width 0.5s ease; width: 0%; }
+
+.stats-row { display: flex; gap: 8px; margin-top: 12px; }
+.stat { flex: 1; background: rgba(255,255,255,0.06); border-radius: 10px; padding: 8px 6px; text-align: center; }
+.stat .n { font-size: 1.2rem; font-weight: 800; }
+.stat .l { font-size: 0.7rem; color: #94a3b8; margin-top: 2px; }
+.n.c { color: #4ade80; }
+.n.r { color: #f87171; }
+.n.b { color: #60a5fa; }
+
+/* Cards */
+.card {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 16px;
+}
+
+/* Home */
+.home-title { font-size: 1.1rem; font-weight: 700; color: #f1f5f9; margin-bottom: 16px; }
+.badge { display: inline-block; background: #e94560; color: white; font-size: 0.7rem; font-weight: 700; padding: 3px 12px; border-radius: 99px; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 14px; }
+
+.mode-grid { display: flex; flex-direction: column; gap: 10px; }
+
+.mode-btn {
+  background: rgba(255,255,255,0.05);
+  border: 1.5px solid rgba(255,255,255,0.15);
+  border-radius: 14px;
+  padding: 18px 16px;
+  text-align: left;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  color: #f1f5f9;
+  font-family: inherit;
+  transition: background 0.15s;
+  -webkit-appearance: none;
+}
+
+.mode-btn:active { background: rgba(233,69,96,0.2); }
+
+.mode-icon { font-size: 2rem; flex-shrink: 0; }
+.mode-info { text-align: left; }
+.mode-title { font-size: 1rem; font-weight: 700; }
+.mode-desc { font-size: 0.8rem; color: #94a3b8; margin-top: 3px; }
+
+.bank-note { font-size: 0.8rem; color: #64748b; text-align: center; margin-top: 12px; }
+
+/* Question screen */
+.round-badge { display: inline-block; background: #e94560; color: white; font-size: 0.7rem; font-weight: 700; padding: 3px 12px; border-radius: 99px; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 12px; }
+
+.dots { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 14px; }
+.dot { width: 9px; height: 9px; border-radius: 50%; background: rgba(255,255,255,0.15); }
+.dot.cur { background: #e94560; width: 16px; border-radius: 4px; }
+.dot.ok { background: #4ade80; }
+.dot.no { background: #f87171; }
+
+.q-num { font-size: 0.8rem; color: #94a3b8; margin-bottom: 6px; }
+.q-text { font-size: 1rem; font-weight: 600; line-height: 1.55; color: #f1f5f9; margin-bottom: 18px; }
+
+.opts { display: flex; flex-direction: column; gap: 8px; }
+
+.opt {
+  background: rgba(255,255,255,0.05);
+  border: 1.5px solid rgba(255,255,255,0.15);
+  border-radius: 12px;
+  padding: 14px 14px;
+  text-align: left;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.92rem;
+  color: #f1f5f9;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  width: 100%;
+  line-height: 1.45;
+  -webkit-appearance: none;
+  transition: background 0.1s, border-color 0.1s;
+}
+
+.opt:active:not(:disabled) { background: rgba(233,69,96,0.15); }
+.opt:disabled { cursor: default; }
+
+.opt-letter {
+  min-width: 24px;
+  height: 24px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.opt.ok { background: rgba(74,222,128,0.15); border-color: #4ade80; color: #4ade80; }
+.opt.no { background: rgba(248,113,113,0.15); border-color: #f87171; color: #f87171; }
+.opt.show { background: rgba(74,222,128,0.1); border-color: #4ade80; color: #4ade80; }
+
+.feedback {
+  margin-top: 14px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  font-size: 0.88rem;
+  line-height: 1.5;
+  display: none;
+}
+.feedback.ok { background: rgba(74,222,128,0.12); border: 1px solid #4ade80; color: #4ade80; display: block; }
+.feedback.no { background: rgba(248,113,113,0.12); border: 1px solid #f87171; color: #f87171; display: block; }
+
+.next-btn {
+  display: block;
+  width: 100%;
+  margin-top: 14px;
+  padding: 16px;
+  background: #e94560;
+  border: none;
+  border-radius: 12px;
+  color: white;
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  -webkit-appearance: none;
+}
+.next-btn:active { opacity: 0.85; }
+
+/* Results */
+.res-card { text-align: center; padding: 24px 20px; }
+.res-icon { font-size: 3.5rem; margin-bottom: 12px; }
+.res-title { font-size: 1.5rem; font-weight: 800; margin-bottom: 6px; }
+.res-sub { color: #94a3b8; font-size: 0.88rem; margin-bottom: 20px; }
+.res-score { font-size: 3.5rem; font-weight: 800; margin-bottom: 4px; }
+.res-score.pass { color: #4ade80; }
+.res-score.ok { color: #facc15; }
+.res-score.fail { color: #f87171; }
+
+.res-nums { display: flex; justify-content: center; gap: 24px; margin: 16px 0 20px; }
+.res-num .n { font-size: 1.6rem; font-weight: 800; }
+.res-num .l { font-size: 0.75rem; color: #94a3b8; }
+
+.review { text-align: left; margin-top: 16px; }
+.rev-head { font-size: 0.75rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 600; margin-bottom: 10px; }
+.rev-item {
+  background: rgba(255,255,255,0.04);
+  border-radius: 10px;
+  padding: 12px 14px;
+  margin-bottom: 8px;
+  border-left: 3px solid transparent;
+  text-align: left;
+}
+.rev-item.ok { border-left-color: #4ade80; }
+.rev-item.no { border-left-color: #f87171; }
+.rev-q { font-size: 0.82rem; color: #94a3b8; margin-bottom: 5px; line-height: 1.4; }
+.rev-ans { font-size: 0.85rem; }
+.rev-correct { font-size: 0.82rem; color: #4ade80; margin-top: 4px; }
+
+.actions { display: flex; flex-direction: column; gap: 10px; margin-top: 20px; }
+.btn-p { padding: 15px; background: #e94560; border: none; border-radius: 12px; color: white; font-family: inherit; font-size: 0.95rem; font-weight: 700; cursor: pointer; width: 100%; -webkit-appearance: none; }
+.btn-s { padding: 13px; background: rgba(255,255,255,0.07); border: 1.5px solid rgba(255,255,255,0.2); border-radius: 12px; color: #f1f5f9; font-family: inherit; font-size: 0.9rem; font-weight: 600; cursor: pointer; width: 100%; -webkit-appearance: none; }
+.btn-p:active { opacity: 0.85; }
+.btn-s:active { background: rgba(255,255,255,0.14); }
+
+.hidden { display: none !important; }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <header>
+    <h1>🚗 Aprende a Conducir</h1>
+    <p>Examen teórico Clase B · Chile</p>
+  </header>
+
+  <div class="progress-area">
+    <div class="prog-top">
+      <span class="prog-label">Progreso total</span>
+      <span class="prog-pct" id="gpct">0%</span>
+    </div>
+    <div class="bar-track"><div class="bar-fill" id="gbar"></div></div>
+    <div class="stats-row">
+      <div class="stat"><div class="n b" id="s-ans">0</div><div class="l">respondidas</div></div>
+      <div class="stat"><div class="n c" id="s-cor">0</div><div class="l">correctas</div></div>
+      <div class="stat"><div class="n r" id="s-wro">0</div><div class="l">incorrectas</div></div>
+      <div class="stat"><div class="n b" id="s-rnd">0</div><div class="l">rondas</div></div>
+    </div>
+  </div>
+
+  <!-- HOME -->
+  <div id="scr-home" class="card">
+    <div class="badge">¡Hora de estudiar!</div>
+    <div class="home-title">¿Qué quieres hacer?</div>
+    <div class="mode-grid">
+      <button class="mode-btn" onclick="startRound('practice')">
+        <span class="mode-icon">📚</span>
+        <span class="mode-info">
+          <span class="mode-title">Ronda de práctica</span>
+          <span class="mode-desc" style="display:block;">5 preguntas con corrección inmediata</span>
+        </span>
+      </button>
+      <button class="mode-btn" onclick="startRound('exam')">
+        <span class="mode-icon">🎯</span>
+        <span class="mode-info">
+          <span class="mode-title">Examen final</span>
+          <span class="mode-desc" style="display:block;">20 preguntas como el examen real</span>
+        </span>
+      </button>
+    </div>
+    <div class="bank-note">Banco: <strong id="bank-n" style="color:#94a3b8;"></strong> preguntas</div>
+  </div>
+
+  <!-- QUESTION -->
+  <div id="scr-q" class="card hidden">
+    <div class="round-badge" id="rb">Práctica</div>
+    <div class="dots" id="dots"></div>
+    <div class="q-num" id="qnum"></div>
+    <div class="q-text" id="qtext"></div>
+    <div class="opts" id="opts"></div>
+    <div class="feedback" id="fb"></div>
+    <button class="next-btn hidden" id="nxt" onclick="nextQ()">Siguiente →</button>
+  </div>
+
+  <!-- RESULTS -->
+  <div id="scr-res" class="card res-card hidden">
+    <div class="res-icon" id="ri"></div>
+    <div class="res-title" id="rt"></div>
+    <div class="res-sub" id="rs"></div>
+    <div class="res-score" id="rsc"></div>
+    <div class="res-nums">
+      <div class="res-num"><div class="n c" id="rc"></div><div class="l">correctas</div></div>
+      <div class="res-num"><div class="n r" id="rw"></div><div class="l">incorrectas</div></div>
+    </div>
+    <div class="review">
+      <div class="rev-head">Revisión de respuestas</div>
+      <div id="rev-list"></div>
+    </div>
+    <div class="actions">
+      <button class="btn-p" onclick="startRound('practice')">Otra ronda de práctica</button>
+      <button class="btn-p" onclick="startRound('exam')">Examen final (20 preguntas)</button>
+      <button class="btn-s" onclick="goHome()">Ir al inicio</button>
+    </div>
+  </div>
+
+</div>
+<script>
+var Q=[
+  {q:"Su vehículo se desvía al frenar. ¿Qué debería hacer?",o:["Cambiar neumáticos de lado","Bombear el pedal al frenar","Usar el freno de mano","Consultar al mecánico lo antes posible"],a:3},
+  {q:"Su vehículo se desvía al frenar. ¿Cuál es la falla más probable?",o:["Bajo nivel del líquido de frenos","El freno de mano está puesto","Frenos mal ajustados","Neumáticos con presión inadecuada"],a:2},
+  {q:"Siente fuerte olor a gasolina mientras conduce. ¿Qué hace?",o:["No preocuparse, son gases de escape","Continuar a velocidad reducida","Continuar, se detendrá más adelante","Detenerse e investigar el problema"],a:3},
+  {q:"¿Cómo previene el riesgo de incendio del vehículo?",o:["Mantener agua sobre el máximo","Evitar conducir con el estanque lleno","Usar gasolina sin plomo","Revisar ante cualquier olor extraño a gasolina"],a:3},
+  {q:"¿Por qué es importante usar zapatos apropiados al conducir?",o:["Para controlar bien los pedales","Para no desgastar las gomas de los pedales","Para efectuar cambios más rápido","Para caminar si necesita ayuda"],a:0},
+  {q:"¿Qué elemento reduce lesiones de cuello en una colisión?",o:["Asiento con air-bag","Frenos ABS","Columna de dirección colapsable","Apoya-cabeza ajustado correctamente"],a:3},
+  {q:"¿Cuándo revisar la presión de los neumáticos?",o:["Después de viaje largo","Después de conducir rápido","Con neumáticos fríos","Con neumáticos calientes"],a:2},
+  {q:"¿Qué líquido en nivel bajo podría causar un accidente?",o:["Líquido de frenos","Anticongelante","Agua de batería","Líquido refrigerante"],a:0},
+  {q:"¿Cuál es la forma más segura de frenar en situación normal?",o:["Freno fuerte, neutro y freno de mano al final","Freno suave, embrague y freno de mano","Neutro, freno fuerte y soltar antes de parar","Freno suave, más fuerte al detenerse y aflojar"],a:3},
+  {q:"¿Cuándo usa las luces intermitentes de peligro?",o:["Cuando está en pana obstruyendo el tránsito","Al estacionar en doble fila","Al estacionar junto a línea amarilla","Cuando los señalizadores no funcionan"],a:0},
+  {q:"El vehículo rebota u oscila al cargarlo en un extremo. ¿Qué indica?",o:["Neumáticos gastados","Neumáticos poco inflados","Volante no centrado","Amortiguadores gastados"],a:3},
+  {q:"¿Por qué mantener los neumáticos a la presión indicada?",o:["Para mantener altura correcta","Para no desgastar el motor","Para ayudar a evitar el ronceo","Para que no se incline el auto"],a:2},
+  {q:"¿A qué se debe un alto consumo de combustible?",o:["Fallas en el sistema de dirección","Aceleraciones en curvas","Frecuentes frenadas y aceleraciones","Conducción en marchas altas"],a:2},
+  {q:"La profundidad mínima de los surcos de neumáticos es:",o:["5.0 mm","4.0 mm","1.6 mm","1.0 mm"],a:2},
+  {q:"¿Qué nunca debe hacer en una bomba de bencina?",o:["Circular por ella","Fumar","Comer","Lavar los parabrisas"],a:1},
+  {q:"Desenganchar el motor al ir circulando:",o:["Permite mejor control","Facilita las maniobras","Aumenta el consumo","Reduce el control del conductor"],a:3},
+  {q:"¿Cuál es la forma más segura de llevar a un niño de 3-4 años?",o:["En la falda compartiendo cinturón","En la falda del adulto con su cinturón","En cualquier asiento con cinturón adulto","En asiento trasero en silla de seguridad"],a:3},
+  {q:"La forma más segura para un niño menor de 2 años es:",o:["En brazos de un adulto","En asiento delantero con cinturón","En asiento trasero con cinturón","En silla de seguridad mirando hacia atrás"],a:3},
+  {q:"¿Cuándo es alto el riesgo de interpretar mal la realidad al conducir?",o:["En camino montañoso con mala visibilidad","Muy cansado, especialmente de noche","En carretera con densa niebla","Con buenas condiciones y carretera demarcada"],a:1},
+  {q:"¿Cuál es el tiempo de reacción promedio del conductor?",o:["1 segundo","0.1 minuto","0.1 segundo","2 segundos"],a:0},
+  {q:"¿Cuándo es más probable perder concentración al conducir?",o:["Al usar los limpiaparabrisas","Al mirar el espejo retrovisor","Al escuchar música a alto volumen","Al usar el teléfono celular"],a:3},
+  {q:"Si toma remedios que afectan la conducción, ¿qué hace?",o:["Limitar a viajes esenciales","Conducir solo acompañado","Conducir distancias cortas","Solicitar consejo médico antes de conducir"],a:3},
+  {q:"Si ingirió alcohol, ¿cuál es el efecto más probable?",o:["Su coordinación se reduce","Su autoconfianza aumenta","Ceguera al color","Sus reacciones serán más rápidas"],a:0},
+  {q:"¿Cómo afecta el alcohol a su conducción?",o:["Acelera sus reacciones","Aumenta su lucidez","Mejora su coordinación","Reduce su concentración"],a:3},
+  {q:"¿Qué consejo daría a quien bebió en una fiesta?",o:["Que se vaya en taxi","Que tome café y conduzca","Que conduzca lento y cuidadoso","Que espere un rato antes de conducir"],a:0},
+  {q:"¿Cuáles son los primeros síntomas de cansancio?",o:["Calor y agresividad","Falta de interés y bostezos","Dificultad para mantener dirección","Párpados que se cierran"],a:1},
+  {q:"¿Qué hace si siente cansancio en un viaje?",o:["Detenerse y comer bastante","Detenerse y respirar profundo","Terminar el viaje y dormir después","Detenerse y dormir siesta o tomar café"],a:3},
+  {q:"¿Cuál es el factor más frecuente en accidentes de tránsito?",o:["Errores de los conductores","Condiciones climáticas","Condiciones de calles y caminos","Fallas mecánicas"],a:0},
+  {q:"¿Qué tipo de accidente origina más muertos en Chile?",o:["Choques contra obstáculos fijos","Colisiones entre vehículos","Los atropellos","Los volcamientos"],a:2},
+  {q:"Antes de poner el vehículo en movimiento desde estacionado, ¿qué hace?",o:["Ajustar los espejos","Seleccionar primera marcha","Mirar alrededor y chequear puntos ciegos","Señalizar"],a:2},
+  {q:"Semáforo en rojo y un Carabinero le indica que avance. ¿Qué hace?",o:["Detenerse, la luz roja lo indica","Avanzar, el Carabinero prevalece sobre señales","Avanzar solo si no vienen vehículos atrás","Avanzar solo si la luz está por cambiar"],a:1},
+  {q:"¿En qué situación puede usar la bocina?",o:["Cuando cede el derecho a vía","Cuando saluda a otros usuarios","Cuando previene un peligro","Cuando manifiesta disgusto"],a:2},
+  {q:"¿Cuándo NO ingresar al cruce aunque el semáforo esté verde?",o:["Cuando hay peatones esperando","Cuando su pista no está despejada después del cruce","Cuando cree que la luz cambiará pronto","Cuando va a virar a la derecha"],a:1},
+  {q:"En carretera de doble calzada sin vehículos adelante, ¿por qué pista circula?",o:["Por la pista izquierda","Por la pista derecha","Por cualquiera de las dos"],a:1},
+  {q:"¿A cuántos metros de la esquina puede estacionar como máximo?",o:["5 metros","10 metros","12 metros","15 metros"],a:1},
+  {q:"¿En qué caso puede dejar el motor funcionando al estacionar?",o:["En ningún caso","Si estará menos de 5 minutos","Si la batería está descargada","Si queda una persona en el vehículo"],a:0},
+  {q:"En vía urbana sentido único sin señalización, ¿a qué lado estaciona?",o:["A ambos lados","En ninguno, no hay señales","Solo al lado derecho según el sentido","Solo al lado izquierdo"],a:2},
+  {q:"¿Qué significa un semáforo en rojo?",o:["Puede seguir si no vienen vehículos","Disminuir velocidad y prepararse","Detenerse antes de la línea de detención","Detenerse sobre el paso de peatones"],a:2},
+  {q:"¿Qué significa un semáforo en amarillo?",o:["Prepararse para continuar","Detenerse antes del cruce salvo que no sea posible hacerlo de forma segura","Continuar si va a virar","Continuar si no hay peatones"],a:1},
+  {q:"¿Para qué sirven las señales amarillas con forma de rombo?",o:["Entregar información","Dar órdenes","Indicar direcciones","Advertir acerca de peligros"],a:3},
+  {q:"¿Qué debe hacer al enfrentar la señal PARE?",o:["Detenerse solo si viene algún vehículo","Detenerse solo si hay peatones","Detenerse solo si está pintada en la calzada","Detenerse siempre"],a:3},
+  {q:"¿Cuándo ingresar a cruce con franjas amarillas diagonales pintadas?",o:["Siempre que el semáforo esté verde","Cuando en la salida hay espacio para no quedar detenido en él","Cada vez que va a virar a la derecha","Solo si hay menos de dos vehículos adelante"],a:1},
+  {q:"¿Qué significa la señal de semáforo dentro de un rombo amarillo?",o:["Semáforo fuera de servicio","Proximidad de semáforo","Semáforo activado por peatones","Semáforos sincronizados"],a:1},
+  {q:"¿Qué luces se encienden después del semáforo en amarillo?",o:["Primero roja y luego amarilla","Primero roja y luego verde","Primero verde y luego roja","Primero verde y luego amarilla"],a:1},
+  {q:"¿Cuándo es la distancia de detención total mucho más larga?",o:["Cuando hay neblina","Cuando es de noche","Cuando está lloviendo","Cuando hay vientos fuertes"],a:2},
+  {q:"Al conducir con neblina de día, ¿qué luces enciende?",o:["Luces delanteras bajas","Luces de estacionamiento","Luces delanteras altas","Luces de advertencia de peligro"],a:0},
+  {q:"¿Cómo conducir en una curva cuando hay hielo en la calzada?",o:["Con embrague y freno al mismo tiempo","Lenta y suavemente","En primera","Frenando mientras toma la curva"],a:1},
+  {q:"Con hielo en la calzada, la distancia de frenado puede ser:",o:["2 veces la normal","5 veces la normal","7 veces la normal","10 veces la normal"],a:3},
+  {q:"Al frenar en calzada mojada y el vehículo patina, ¿qué hace primero?",o:["Soltar el freno completamente","Tirar del freno de mano","Apretar más el pedal de freno","Poner el pie en el embrague"],a:0},
+  {q:"Su vehículo está en pana en autopista. ¿Qué hace primero?",o:["Detener autos para pedir ayuda","Intentar reparar rápidamente","Encender luces de advertencia de peligro","Instalar triángulo reflectante"],a:2},
+  {q:"De noche lo encandilan las luces de un vehículo. ¿Qué hace?",o:["Reduce la velocidad o se detiene","Cierra los ojos","Hace parpadear sus luces","Baja la visera solar"],a:0},
+  {q:"Calzada mojada, ¿qué distancia mínima mantiene del vehículo adelante?",o:["Al menos equivalente a 4 segundos","Equivalente a 1 segundo","Equivalente a 2 segundos","Como máximo 3 segundos"],a:0},
+  {q:"¿Cómo adelantar a personas que van a caballo?",o:["Lentamente y dejando bastante espacio lateral","Pasando cerca y rápido","La velocidad no importa, solo el espacio","Tocando bocina una vez como advertencia"],a:0},
+  {q:"¿Dónde tener especial cuidado con motociclistas?",o:["En una estación de servicio","En los cruces de calles","En las proximidades de un área de servicio","Al ingresar a estacionamientos"],a:1},
+  {q:"¿Por qué cuidado al cruzarse con bus detenido en parada?",o:["El bus puede estar en pana","El bus puede arrancar repentinamente","Pueden aparecer peatones detrás del bus","El bus puede quedar detenido"],a:2},
+  {q:"A 90 km/h en condiciones normales, ¿cuál es la distancia mínima de seguridad?",o:["Unos 75 metros","Unos 15 metros","Unos 20 metros","Unos 100 metros"],a:0},
+  {q:"¿Qué es lo más importante para no chocar con el vehículo adelante?",o:["Frenos eficientes","Conducir a velocidad constante","Mantener distancia adecuada","Tener neumáticos en buen estado"],a:2},
+  {q:"¿Dónde se produce la mayor parte de los accidentes de tránsito?",o:["En carreteras","En salidas de colegios","En caminos rurales","En intersecciones"],a:3},
+  {q:"¿Qué grupo tiene mayor probabilidad de verse involucrado en accidente?",o:["Menores de 25 años","Entre 36 y 45 años","Entre 46 y 55 años","Mayores de 55 años"],a:0},
+  {q:"¿Por qué adelantar a un camión es más riesgoso que a un auto?",o:["Los camiones pueden detenerse sorpresivamente","Los camiones son más largos","Los frenos de camiones no son tan buenos","Los camiones suben pendientes más lento"],a:1},
+  {q:"Antes de adelantar un vehículo grande, ¿por qué mantenerse atrás?",o:["Para tener mejor visual hacia adelante","Para tener espacio de acelerar en curvas","Para tener espacio si retrocede","Para ver señales del conductor"],a:0},
+  {q:"¿Intenta evitar que lo adelanten cuando va al límite de velocidad?",o:["No, salvo que sea seguro hacerlo","Sí, el otro actúa peligrosamente","Sí, el otro infringe la ley","No, en ningún momento"],a:3},
+  {q:"¿Cuál es el factor más frecuente en colisiones por la parte trasera?",o:["Conducir muy cerca del vehículo adelante","Cambio repentino de semáforos","Peatones cruzando en zonas concurridas","Detenerse en todos los cruces"],a:0},
+  {q:"En cruce no señalizado, ¿quién tiene la prioridad?",o:["El vehículo más grande","El que va a mayor velocidad","El otro vehículo si viene por su derecha","El otro vehículo si viene por su izquierda"],a:2},
+  {q:"Velocidad máxima de día en zona rural con buen pavimento sin señales:",o:["50 km/h","90 km/h","120 km/h","100 km/h"],a:3},
+  {q:"Velocidad máxima en ciudad en calle de 2 pistas sentido único sin señales:",o:["30 km/h","60 km/h","50 km/h","80 km/h"],a:2},
+  {q:"Antes de tomar una curva cerrada, usted debe:",o:["Acelerar para salir cuanto antes","Acelerar y reducir al salir","Disminuir solo si la calzada está mojada","Disminuir velocidad y luego acelerar gradualmente al recorrerla"],a:3},
+  {q:"Al descender pendiente larga, ¿qué hace para controlar la velocidad?",o:["Tomar firmemente el manubrio","Seleccionar una marcha baja","Seleccionar neutro","Presionar el embrague"],a:1},
+  {q:"Al virar en camino resbaladizo, las ruedas traseras resbalan. ¿Qué hace?",o:["Frenar firmemente sin girar el volante","Guiar cuidadosamente hacia donde resbaló","Usar embrague y frenar firmemente","Girar hacia la derecha"],a:1},
+  {q:"¿Cómo corregir un coletazo de las ruedas traseras?",o:["No girar el volante","Girar hacia el lado opuesto al coletazo","Girar hacia el lado que se desplaza la cola","Aplicar el freno de mano"],a:2},
+  {q:"Al sobrepasar bus detenido en parada, ¿cuál es el principal peligro?",o:["Debe ceder el paso al bus","El auto adelante puede parar por un peatón","Alguien puede venir corriendo","Un pasajero puede aparecer adelante del bus para cruzar"],a:3},
+  {q:"Ve una pelota rebotando entre autos estacionados. ¿Qué hace?",o:["Continúa tocando bocina","Continúa encendiendo y apagando luces","Se detiene y señala para que los niños crucen","Disminuye velocidad y se prepara para detenerse"],a:3},
+  {q:"Al adelantar animales en el camino, NO debería:",o:["Acelerar o tocar la bocina","Cambiar a marcha más baja","Usar los señalizadores de viraje","Tener las luces encendidas"],a:0},
+  {q:"Espera en cruce en T. El vehículo azul señaliza a la derecha. ¿Qué hace?",o:["Avanzar acelerando a fondo","Ponerse en marcha antes que llegue el azul","Esperar hasta que el azul haya comenzado a virar","Avanzar lentamente"],a:2},
+  {q:"Bloqueado en cruce ferroviario y suena la campanilla. ¿Qué hace?",o:["Correr por la vía para avisar al maquinista","Salir del vehículo y alejarse","Seguir intentando reiniciar el motor","Intentar despejar el cruce empujando"],a:1},
+  {q:"¿Qué significa la señal de zig-zag en rombo amarillo?",o:["Gravilla suelta","Peligro de pinchazos","Pavimento resbaladizo","Curvas en el camino"],a:2},
+  {q:"¿Qué significa la señal de dos autos con círculo rojo y línea diagonal?",o:["No adelantar","Mantenga su derecha","Preferencia al tránsito contrario","No cambiar de pista"],a:0},
+  {q:"¿Qué significa la señal VELOCIDAD MAXIMA 70?",o:["Puede ir 10% más rápido, es recomendación","En días no hábiles no rige","No debe exceder esa velocidad","Debe mantener velocidad inferior a la indicada"],a:2},
+  {q:"Los vehículos no pueden detenerse ni circular por:",o:["La pista izquierda","La berma de autopista","Zonas achuradas","Líneas blancas discontinuas"],a:2},
+  {q:"¿Quiénes cubre el Seguro Obligatorio de Accidentes Personales?",o:["Solo el conductor asegurado","Solo los pasajeros","Solo pasajeros y conductor","El conductor, pasajeros y cualquier tercero afectado"],a:3},
+  {q:"Conducir bajo efectos del alcohol es:",o:["Una infracción leve","Una infracción menos grave","Una infracción grave","Una infracción gravísima"],a:3},
+  {q:"Estaciona de noche en carretera rural por emergencia. ¿Cuándo enciende luces de estacionamiento?",o:["Solo cuando parte del vehículo queda en la calzada","Cuando hay línea blanca continua al centro","Cuando el camino es de tierra","Siempre"],a:3},
+  {q:"¿Cómo controlar mejor el vehículo con nieve?",o:["En cambio bajo con volante muy firme","En primera","Con motor acelerado y embrague pisado","Lentamente en el cambio más alto posible"],a:3},
+  {q:"En mucha neblina detrás de otros vehículos, ¿cómo reduce el riesgo?",o:["Usando luces altas","Circulando despacio y aumentando distancia al vehículo adelante","Manteniéndose cerca del vehículo adelante","Encendiendo luces de advertencia de peligro"],a:1},
+  {q:"¿Cuál es la distancia de seguridad en vía rápida buenas condiciones?",o:["Equivalente a 3 segundos de recorrido","Igual al largo de un auto","3 metros","Igual al largo de 3 autos"],a:0},
+  {q:"Bus detenido en parada señaliza con intermitente izquierdo. ¿Qué hace?",o:["Hace parpadear sus luces y disminuye velocidad","Toca bocina y continúa","Disminuye velocidad y toca bocina","Disminuye velocidad y cede el paso si es seguro"],a:3},
+  {q:"Va a velocidad máxima y otro conductor intenta adelantarlo. ¿Qué hace?",o:["Se acerca al vehículo adelante para impedir el adelantamiento","Le hace señas para que adelante cuando sea seguro","Acelera para alejarse","Mantiene o disminuye velocidad y permite el adelantamiento"],a:3},
+  {q:"En cruce hay peatones atravesando hacia donde usted vira. ¿Qué hace?",o:["Les hace señas para que continúen","Continúa porque tiene preferencia","Espera que crucen","Enciende luces de advertencia de peligro"],a:2},
+  {q:"Es el primero en llegar al lugar de un accidente con heridos. ¿Qué hace?",o:["Encender luces de advertencia de peligro","Asegurarse de que los motores estén apagados","Abandonar cuando llegue otro conductor","Ayudar a salir a las personas ilesas"],a:0},
+  {q:"¿Cómo ayudar a persona con fuerte hemorragia en la pierna?",o:["Sentarla y darle algo caliente","Mantenerla con la pierna en alto","Aplicar presión firme con paño limpio y vendar","Sentarla y esperar la ambulancia"],a:2},
+  {q:"¿Adquiere algún derecho al usar los indicadores de viraje?",o:["Sí, dan preferencia en igual dirección","Sí, y lo exime de responsabilidad","No, solo advierte intención de maniobra cuando sea seguro","Sí, pero solo al salir del estacionamiento"],a:2},
+  {q:"¿Cuándo no detenerse al ponerse el semáforo en amarillo?",o:["Cuando la luz cambia sorpresivamente","Cuando va demasiado rápido","Cuando ya ingresó al cruce","Cuando la detención puede causar un accidente"],a:3},
+  {q:"¿Qué precaución al cargar un remolque que va a arrastrar?",o:["Mayor peso atrás","Mayor peso adelante","El peso distribuido en forma pareja","El peso al lado derecho"],a:2},
+  {q:"Remolque pequeño comienza a zigzaguear. ¿Qué hace?",o:["Frena a fondo y mantiene la presión","Aumenta la velocidad","Suelta el volante y espera que se corrija solo","Retira suavemente el pie del acelerador y disminuye velocidad"],a:3}
+];
+
+var used=[], totAns=0, totCor=0, totWro=0, totRnd=0;
+var rndQ=[], rndIdx=0, rndCor=0, rndWro=0, mode='practice';
+var answered=false, rndAnswers=[];
+
+document.getElementById('bank-n').textContent = Q.length;
+
+function goHome(){
+  hide('scr-q'); hide('scr-res'); show('scr-home');
+}
+
+function startRound(m){
+  mode=m;
+  var count=m==='exam'?20:5;
+  if(used.length+count>Q.length) used=[];
+  var avail=Q.map(function(_,i){return i;}).filter(function(i){return used.indexOf(i)===-1;});
+  avail.sort(function(){return Math.random()-0.5;});
+  rndQ=avail.slice(0,count);
+  rndQ.forEach(function(i){used.push(i);});
+  rndIdx=0; rndCor=0; rndWro=0; rndAnswers=[]; totRnd++;
+  updateStats();
+  hide('scr-home'); hide('scr-res'); show('scr-q');
+  showQ();
+}
+
+function showQ(){
+  answered=false;
+  var qi=rndQ[rndIdx], q=Q[qi], tot=rndQ.length;
+  document.getElementById('rb').textContent=mode==='exam'?'Examen Final':'Ronda de práctica';
+  document.getElementById('qnum').textContent='Pregunta '+(rndIdx+1)+' de '+tot;
+  document.getElementById('qtext').textContent=q.q;
+  var ol=document.getElementById('opts'); ol.innerHTML='';
+  var letters=['A','B','C','D'];
+  q.o.forEach(function(opt,i){
+    var btn=document.createElement('button');
+    btn.className='opt';
+    btn.innerHTML='<span class="opt-letter">'+letters[i]+'</span> '+opt;
+    btn.setAttribute('data-i', i);
+    btn.onclick=function(){selectAns(i, q.a);};
+    ol.appendChild(btn);
+  });
+  var fb=document.getElementById('fb'); fb.className='feedback'; fb.innerHTML='';
+  hide('nxt');
+  var dots=document.getElementById('dots'); dots.innerHTML='';
+  for(var i=0;i<tot;i++){
+    var d=document.createElement('div');
+    var cls='dot';
+    if(i<rndIdx) cls+=(rndAnswers[i]?' ok':' no');
+    else if(i===rndIdx) cls+=' cur';
+    d.className=cls; dots.appendChild(d);
+  }
+}
+
+function selectAns(chosen, correct){
+  if(answered) return;
+  answered=true;
+  var btns=document.querySelectorAll('.opt');
+  for(var i=0;i<btns.length;i++) btns[i].disabled=true;
+  var isOk=chosen===correct;
+  rndAnswers.push(isOk);
+  btns[chosen].classList.add(isOk?'ok':'no');
+  if(!isOk) btns[correct].classList.add('show');
+  totAns++; if(isOk){totCor++;rndCor++;}else{totWro++;rndWro++;}
+  var fb=document.getElementById('fb');
+  var q=Q[rndQ[rndIdx]];
+  if(isOk){
+    fb.className='feedback ok';
+    fb.innerHTML='<strong>✓ ¡Correcto!</strong> Muy bien.';
+  } else {
+    fb.className='feedback no';
+    fb.innerHTML='<strong>✗ Incorrecto.</strong> Respuesta correcta: <strong>'+q.o[correct]+'</strong>';
+  }
+  updateStats(); show('nxt');
+  var isLast=rndIdx===rndQ.length-1;
+  document.getElementById('nxt').textContent=isLast?'Ver resultados →':'Siguiente pregunta →';
+}
+
+function nextQ(){
+  rndIdx++;
+  if(rndIdx>=rndQ.length) showRes();
+  else showQ();
+}
+
+function showRes(){
+  hide('scr-q'); show('scr-res');
+  var tot=rndQ.length, pct=Math.round(rndCor/tot*100);
+  var icon,title,sub,cls;
+  if(pct>=80){icon='🏆';title='¡Excelente!';sub='Estás muy bien preparada para el examen.';cls='pass';}
+  else if(pct>=60){icon='📖';title='Bien, sigue estudiando';sub='Vas bien, revisa los errores.';cls='ok';}
+  else{icon='💪';title='Hay que practicar más';sub='Repasa y vuelve a intentar.';cls='fail';}
+  document.getElementById('ri').textContent=icon;
+  document.getElementById('rt').textContent=title;
+  document.getElementById('rs').textContent=sub;
+  var sc=document.getElementById('rsc');
+  sc.textContent=pct+'%'; sc.className='res-score '+cls;
+  document.getElementById('rc').textContent=rndCor;
+  document.getElementById('rw').textContent=rndWro;
+  var rl=document.getElementById('rev-list'); rl.innerHTML='';
+  rndQ.forEach(function(qi,i){
+    var q=Q[qi], wasOk=rndAnswers[i];
+    var el=document.createElement('div');
+    el.className='rev-item '+(wasOk?'ok':'no');
+    el.innerHTML='<div class="rev-q">'+(i+1)+'. '+q.q+'</div>'
+      +(wasOk?'<div class="rev-ans" style="color:#4ade80;font-size:0.82rem;">✓ Correcto</div>'
+      :'<div class="rev-correct">✓ Correcta: '+q.o[q.a]+'</div>');
+    rl.appendChild(el);
+  });
+}
+
+function updateStats(){
+  var pct=Math.min(Math.round(totAns/Q.length*100),100);
+  document.getElementById('gpct').textContent=pct+'%';
+  document.getElementById('gbar').style.width=pct+'%';
+  document.getElementById('s-ans').textContent=totAns;
+  document.getElementById('s-cor').textContent=totCor;
+  document.getElementById('s-wro').textContent=totWro;
+  document.getElementById('s-rnd').textContent=totRnd;
+}
+
+function show(id){document.getElementById(id).classList.remove('hidden');}
+function hide(id){document.getElementById(id).classList.add('hidden');}
+</script>
+</body>
+</html>
